@@ -244,11 +244,11 @@ WHERE NOT EXISTS(
 );
 
 /* Ejercicio 32 */
-(SELECT ciudad FROM P) 
-UNION 
-(SELECT ciudad FROM J) 
-UNION 
-(SELECT ciudad FROM S);
+SELECT * 
+FROM    ((SELECT ciudad FROM P) UNION 
+        (SELECT ciudad FROM J) UNION 
+        (SELECT ciudad FROM S)) U
+ORDER BY ciudad;
 /* Ejercicio 33 */
 UPDATE P
 SET color = 'Gris'
@@ -259,8 +259,3 @@ FROM J
 WHERE j NOT IN (SELECT DISTINCT j FROM SPJ);
 /* Ejercicio 35 */
 INSERT INTO S VALUES ('S9', 'Salazar', NULL,'Nueva York');
-
---SELECT p FROM SPJ, J WHERE SPJ.j = J.j AND ciudad = 'Londres';
--- SELECT ciudad FROM SPJ, J WHERE SPJ.j = J.j
-
-
