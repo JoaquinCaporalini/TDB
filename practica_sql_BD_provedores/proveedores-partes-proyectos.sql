@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS J;
 
 -- describe S;
 CREATE TABLE S (
-    s 	        CHAR(2)     NOT NULL,
+    s 	        VARCHAR(3)  NOT NULL,
     snombre 	VARCHAR(15)	NOT NULL,
     situacion   INT(30),
     ciudad      VARCHAR(10) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE J (
 
 -- describe SPJ;
 CREATE TABLE SPJ (
-    s           CHAR(2)     NOT NULL,
+    s           VARCHAR(3)  NOT NULL,
     p           CHAR(2)     NOT NULL,
     j           CHAR(2)     NOT NULL,
     cant        INT,
@@ -190,6 +190,13 @@ WHERE p IN (
     FROM P
     WHERE color = 'Rojo'
     );
+
+SELECT DISTINCT s FROM SPJ WHERE p IN
+(SELECT p FROM SPJ WHERE s IN
+(SELECT s FROM SPJ WHERE p IN
+(SELECT p FROM P WHERE color = "Rojo" ) ) ) ;
+
+
 /* Ejercicio 26 */
 SELECT s
 FROM S
@@ -219,20 +226,19 @@ WHERE EXISTS (
     WHERE SPJ.j = J.j AND S = 'S1'
 );
 /* Ejercicio 30 */
-SELECT DISTINCT j
-FROM SPJ
-WHERE EXISTS (
-    SELECT *
-    FROM P
-    WHERE EXISTS(
-        SELECT *
-        FROM S
-        WHERE   S.s <> 'Londres' AND
-                P.color <> 'Rojo' AND
-                S.s = SPJ.s AND
-                P.p = SPJ.p
-    )
-);
+SELECT j
+FROM J
+WHERE NOT EXISTS ( 
+    SELECT * FROM SPJ
+    WHERE   j = J.j
+            AND p IN ( 
+                SELECT p 
+                FROM P
+                WHERE color = "Rojo")
+            AND s IN ( 
+                SELECT s 
+                FROM S
+                WHERE ciudad = "Londres") );
 /* Ejercicio 31 */
 SELECT DISTINCT j
 FROM J
@@ -258,4 +264,31 @@ DELETE
 FROM J
 WHERE j NOT IN (SELECT DISTINCT j FROM SPJ);
 /* Ejercicio 35 */
-INSERT INTO S VALUES ('S9', 'Salazar', NULL,'Nueva York');
+INSERT INTO S VALUES ('S10', 'Salazar', NULL,'Nueva York');
+
+
+/* ADICIONALES NO RELACIONADAS A LA PRACTICA */
+
+SELECT s
+from S
+WHERE s IN (SELECT s FROM S) AND s NOT IN (SELECT s FROM SPJ);
+
+SELECT ciudad
+FROM ((SELECT ciudad FROM S) UNION (SELECT ciudad FROM P)) U
+WHERE U.ciudad IN (SELECT ciudad FROM S) AND U.ciudad IN (SELECT ciudad FROM P);
+
+SELECT DISTINCT ciudad
+FROM S U
+WHERE U.ciudad IN (SELECT ciudad FROM P);
+
+INSERT INTO SPJ VALUES('S5', 'P3', 'J1', '100');
+INSERT INTO SPJ VALUES('S5', 'P2', 'J5', '100');
+INSERT INTO SPJ VALUES('S3', 'P3', 'J1', '100');
+INSERT INTO SPJ VALUES('S3', 'P2', 'J5', '100');
+
+(SELECT * FROM SPJ WHERE p = 'P2' OR p = 'P3');
+
+SELECT DISTINCT s
+FROM (SELECT * FROM SPJ WHERE p = 'P2' OR p = 'P3') I
+GROUP BY s
+HAVING COUNT(DISTINCT p) = 2;
