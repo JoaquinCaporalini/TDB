@@ -1,18 +1,33 @@
-CREATE DATABASE IF NOT EXISTS `Inmobiliaria`;
+CREATE DATABASE IF NOT EXISTS `jcaporalini_Inmobiliaria`;
 
-USE `Inmobiliaria`;
+USE `jcaporalini_Inmobiliaria`;
 
-DROP TABLE IF EXISTS `Poblacion`;
-DROP TABLE IF EXISTS `Zona`;
-DROP TABLE IF EXISTS `Inmueble`;
-DROP TABLE IF EXISTS `Limita`;
-DROP TABLE IF EXISTS `Persona`;
-DROP TABLE IF EXISTS `Vendedor`;
-DROP TABLE IF EXISTS `Cliente`;
-DROP TABLE IF EXISTS `Propietario`;
+-- 11DROP TABLE IF EXISTS `Poblacion`;
+-- 9 DROP TABLE IF EXISTS `Zona`;
+-- 6 DROP TABLE IF EXISTS `Inmueble`;
+-- 4 DROP TABLE IF EXISTS `Limita`;
+-- 10 DROP TABLE IF EXISTS `Persona`;
+-- 8 DROP TABLE IF EXISTS `Vendedor`;
+-- 5 DROP TABLE IF EXISTS `Cliente`;
+-- 7 DROP TABLE IF EXISTS `Propietario`;
+-- 1 DROP TABLE IF EXISTS `PoseeInmueble`;
+-- 2 DROP TABLE IF EXISTS `PrefiereZona`;
+-- 3 DROP TABLE IF EXISTS `Visitas`;
+
 DROP TABLE IF EXISTS `PoseeInmueble`;
 DROP TABLE IF EXISTS `PrefiereZona`;
 DROP TABLE IF EXISTS `Visitas`;
+DROP TABLE IF EXISTS `Limita`;
+
+DROP TABLE IF EXISTS `Cliente`;
+DROP TABLE IF EXISTS `Inmueble`;
+DROP TABLE IF EXISTS `Propietario`;
+
+DROP TABLE IF EXISTS `Vendedor`;
+DROP TABLE IF EXISTS `Zona`;
+
+DROP TABLE IF EXISTS `Persona`;
+DROP TABLE IF EXISTS `Poblacion`;
 
 CREATE TABLE `Poblacion`(
   `nombre_poblacion`  VARCHAR(20)   NOT NULL,
