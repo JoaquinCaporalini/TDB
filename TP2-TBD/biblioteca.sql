@@ -69,13 +69,23 @@ UPDATE Autor
 SET residencia = 'Buenos Aires'
 WHERE id = (SELECT id FROM Autor WHERE nombre = 'Abelardo' AND apellido = 'Castillo');
 
-UPDATE Libro
-SET precio = precio + precio * 0.2
-WHERE precio > 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
+-- UPDATE Libro
+-- SET precio = precio + precio * 0.2
+-- WHERE precio > 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
+
+-- UPDATE Libro
+-- SET precio = precio + precio * 0.1
+-- WHERE precio <= 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
+
+SELECT * FROM Libro;
 
 UPDATE Libro
-SET precio = precio + precio * 0.1
-WHERE precio <= 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
+SET precio = precio + precio * 
+        IF( precio <= 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino'),
+            0.1,
+            0.2);
+
+SELECT * FROM Libro;
 
 DELETE FROM Libro
 WHERE isbn IN (SELECT isbn FROM Escribe WHERE año = 1998);
