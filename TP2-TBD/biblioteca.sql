@@ -37,16 +37,20 @@ CREATE TABLE Escribe (
 );
 DESCRIBE Escribe;
 
+INSERT INTO Autor VALUES (DEFAULT, 'Abelardo', 'Castillo ', 'Argentino', 'Rosario');
+
+--- 3) a)
+-- Autores
 INSERT INTO Autor VALUES (DEFAULT, 'Aldous Leonard', 'Huxley', 'Britanico', NULL);
 INSERT INTO Autor VALUES (DEFAULT, 'Eduardo Alfredo', 'Sacheri', 'Argentino', 'Buenos Aires');
 INSERT INTO Autor VALUES (DEFAULT, 'Ray', 'Bradbury', 'Estadounidense', NULL);
 
-INSERT INTO Autor VALUES (DEFAULT, 'Abelardo', 'Castillo ', 'Argentino', 'Rosario');
-
+-- Libros
 INSERT INTO Libro VALUES ('9789871138517', 'Un mundo feliz', 'Debolsillo', '3149');
 INSERT INTO Libro VALUES ('9789588948386', 'La noche de la Usina', 'Alfaguara', 4522);
 INSERT INTO Libro VALUES ('9789505472123', 'Fahrenheit 451', 'Minotauro', '2800');
 
+-- Relación "Escribe"
 INSERT INTO Escribe VALUES (
     (SELECT id FROM Autor WHERE nombre = 'Aldous Leonard' AND apellido = 'Huxley'),
     '9789871138517',
@@ -65,10 +69,12 @@ INSERT INTO Escribe VALUES (
     1932
 );
 
+--- 3) b)
 UPDATE Autor
 SET residencia = 'Buenos Aires'
 WHERE id = (SELECT id FROM Autor WHERE nombre = 'Abelardo' AND apellido = 'Castillo');
 
+--- 3) c)
 -- UPDATE Libro
 -- SET precio = precio + precio * 0.2
 -- WHERE precio > 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
@@ -80,17 +86,29 @@ WHERE id = (SELECT id FROM Autor WHERE nombre = 'Abelardo' AND apellido = 'Casti
 SELECT * FROM Libro;
 
 UPDATE Libro
-SET precio = precio + precio * 
-        IF( precio <= 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino'),
-            0.1,
-            0.2);
+SET precio = precio * 
+    IF( precio <= 200 AND isbn 
+            IN (SELECT isbn 
+                FROM Autor, Escribe 
+                WHERE Autor.id = Escribe.id 
+                AND Autor.nacionalidad <> 'Argentino'),
+        1.1,   -- THEN 10% de aumento
+        1.2);  -- ELSE 20% de aumento
 
 SELECT * FROM Libro;
 
+--- 3) d)
 DELETE FROM Libro
 WHERE isbn IN (SELECT isbn FROM Escribe WHERE año = 1998);
 
+--- 3) e)
 SELECT isbn
 FROM Escribe
 GROUP BY isbn
 HAVING COUNT(*) = 2;
+
+-- SELECT Escribe.isbn, titulo
+-- FROM Escribe, Libro
+-- WHERE Escribe.isbn = Libro.isbn
+-- GROUP BY isbn
+-- HAVING COUNT(*) = 2;
