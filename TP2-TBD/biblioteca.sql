@@ -70,7 +70,7 @@ SET residencia = 'Buenos Aires'
 WHERE id = (SELECT id FROM Autor WHERE nombre = 'Abelardo' AND apellido = 'Castillo');
 
 UPDATE Libro
-SET precio = precio + precio * 0.1
+SET precio = precio + precio * 0.2
 WHERE precio > 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
 
 UPDATE Libro

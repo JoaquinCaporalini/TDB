@@ -36,10 +36,18 @@ WHERE `nombre_poblacion` = 'Rosario'
 GROUP BY `nombre_zona`;
 
 -- F --
-SELECT `codigo_cliente`
-FROM `PrefiereZona`
-WHERE `nombre_poblacion` = 'Santa Fe';
-GROUP BY `codigo_cliente`;
--- HAVING COUNT(`nombre_zona`) = 3;
+SELECT `nombre`
+FROM `Persona`
+WHERE `codigo` IN (
+      SELECT `codigo_cliente`
+      FROM `PrefiereZona`
+      WHERE `nombre_poblacion` = 'Santa Fe'
+);
 
-(SELECT COUNT(DISTINCT `nombre_zona`) FROM `Zona` WHERE `nombre_poblacion` = 'Santa Fe');
+-- G --
+SELECT F.mes,COUNT(*)
+FROM (SELECT MONTH(`fecha_hora`) mes, `codigo_inmueble`  FROM `Visitas` WHERE YEAR(`fecha_hora`) = YEAR(NOW())) F
+GROUP BY F.mes;
+
+
+-- (SELECT COUNT(DISTINCT `nombre_zona`) FROM `Zona` WHERE `nombre_poblacion` = 'Santa Fe');
