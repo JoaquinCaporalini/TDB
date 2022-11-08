@@ -1,3 +1,7 @@
+-- Peralta A., Lautaro	P-4970/1
+-- Hess, Laureano	H-1139/8
+-- Caporalini, Joaquin	C-6871/3
+
 CREATE DATABASE IF NOT EXISTS jcaporalini_Bibioteca;
 
 USE jcaporalini_Bibioteca;
@@ -12,8 +16,7 @@ CREATE TABLE Autor (
     apellido        VARCHAR(20) NOT NULL,
     nacionalidad    VARCHAR(20) NOT NULL,
     residencia      VARCHAR(20) NULL,
-    PRIMARY KEY (id),
-    INDEX (nombre, apellido)
+    PRIMARY KEY (id)
 );
 DESCRIBE Autor;
 
@@ -22,8 +25,7 @@ CREATE TABLE Libro (
     titulo          VARCHAR(50) NOT NULL,
     editorial       VARCHAR(20) NOT NULL,
     precio          INT         NULL     DEFAULT NULL,
-    PRIMARY KEY (isbn),
-    INDEX (titulo)
+    PRIMARY KEY (isbn)
 );
 DESCRIBE Libro;
 
@@ -36,6 +38,13 @@ CREATE TABLE Escribe (
     FOREIGN KEY (isbn) REFERENCES Libro(isbn) ON DELETE CASCADE ON UPDATE CASCADE
 );
 DESCRIBE Escribe;
+
+--- 2
+-- Creamos indices para que el motor agilize las consultas con titulo de libro 
+-- o el nombre y apellido del autor del mismo
+CREATE INDEX ix_titulo ON Libro(titulo);
+CREATE INDEX ix_autor ON Autor(nombre, apellido);
+
 
 INSERT INTO Autor VALUES (DEFAULT, 'Abelardo', 'Castillo ', 'Argentino', 'Rosario');
 
@@ -72,17 +81,12 @@ INSERT INTO Escribe VALUES (
 --- 3) b)
 UPDATE Autor
 SET residencia = 'Buenos Aires'
-WHERE id = (SELECT id FROM Autor WHERE nombre = 'Abelardo' AND apellido = 'Castillo');
+WHERE id = (SELECT id 
+	    FROM Autor 
+	    WHERE nombre = 'Abelardo' 
+	    AND apellido = 'Castillo');
 
 --- 3) c)
--- UPDATE Libro
--- SET precio = precio + precio * 0.2
--- WHERE precio > 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
-
--- UPDATE Libro
--- SET precio = precio + precio * 0.1
--- WHERE precio <= 200 AND isbn IN (SELECT isbn FROM Autor, Escribe WHERE Autor.id = Escribe.id AND Autor.nacionalidad <> 'Argentino');
-
 SELECT * FROM Libro;
 
 UPDATE Libro
@@ -102,13 +106,8 @@ DELETE FROM Libro
 WHERE isbn IN (SELECT isbn FROM Escribe WHERE año = 1998);
 
 --- 3) e)
-SELECT isbn
-FROM Escribe
-GROUP BY isbn
+SELECT Escribe.isbn, titulo
+FROM Escribe, Libro
+WHERE Escribe.isbn = Libro.isbn
+GROUP BY Escribe.isbn
 HAVING COUNT(*) = 2;
-
--- SELECT Escribe.isbn, titulo
--- FROM Escribe, Libro
--- WHERE Escribe.isbn = Libro.isbn
--- GROUP BY isbn
--- HAVING COUNT(*) = 2;

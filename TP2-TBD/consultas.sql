@@ -1,3 +1,7 @@
+-- Peralta A., Lautaro	P-4970/1
+-- Hess, Laureano	H-1139/8
+-- Caporalini, Joaquin	C-6871/3
+
 USE `jcaporalini_Inmobiliaria`;
 
 -- A --
@@ -8,9 +12,13 @@ WHERE `codigo_propietario` = `codigo`;
 -- B --
 SELECT `codigo`
 FROM  `Inmueble`
-WHERE 600000 < `precio` AND `precio` < 700000;
+WHERE "precio" BETWEEN 600000 AND 700000;
 
 -- C --
+-- Sabemos que el codigo de los clientes coincide con el codigo de la persona
+-- y que los no clientes no tienen codigo de cliente (valga la redundancia)
+-- por lo que para evitar realizar otro producto usamos esta
+-- relacion transitiva y colocamos unicamente Persona sin necesidad de usar Cliente también.
 SELECT `nombre`
 FROM `PrefiereZona`, `Persona`
 WHERE `codigo_cliente` = `codigo` AND 
@@ -30,7 +38,7 @@ WHERE `Persona`.`codigo` = `Vendedor`.`codigo` AND
 );
 
 -- E --
-SELECT `nombre_zona`,COUNT(`codigo`), AVG(`precio`)
+SELECT `nombre_zona`, COUNT(`codigo`), AVG(`precio`)
 FROM `Inmueble`
 WHERE `nombre_poblacion` = 'Rosario'
 GROUP BY `nombre_zona`;
@@ -43,6 +51,14 @@ WHERE `codigo` IN (
       FROM `PrefiereZona`
       WHERE `nombre_poblacion` = 'Santa Fe'
 );
+
+SELECT nombre
+FROM Cliente, PrefiereZona, Persona
+WHERE Cliente.codigo = PrefiereZona.codigo_cliente 
+	AND PrefiereZona.nombre_poblacion = "Santa Fe"
+	AND Persona.codigo = Cliente.codigo
+GROUP BY Cliente.codigo
+HAVING COUNT(DISTINCT PrefiereZona.nombre_zona) = (SELECT COUNT(*) FROM Zona WHERE nombre_poblacion = "Santa Fe");
 
 -- G --
 SELECT F.mes,COUNT(*)
